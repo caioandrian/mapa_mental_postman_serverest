@@ -1,5 +1,5 @@
 # xmind-mapeamento
-Exemplo de mapeamento
+Exemplo de mapa mental
 
 - Software
 www.xmind.net/
