@@ -1,4 +1,8 @@
 # xmind-mapeamento
 Exemplo de mapeamento
 
-link https://www.xmind.net/
+software www.xmind.net/
+
+link do e-commerce www.moikana.com.br
+
+link da API www.favqs.com/api
