@@ -10,7 +10,7 @@ www.moikana.com.br
 - API para teste (mapa mental back-end)
 www.favqs.com/api
 
-**Exemplo de Funcionalidades no Ecommerce: **
+**Exemplo de Funcionalidades no Ecommerce:**
 * Autenticação 
     * esquema de cenário: Login
         * cenário 1: entrar com chave de acesso
