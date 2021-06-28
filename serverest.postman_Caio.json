@@ -1,0 +1,981 @@
+{
+	"info": {
+		"_postman_id": "02631d39-61a4-4f24-a4e9-c671196dc04c",
+		"name": "serverest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "login",
+			"item": [
+				{
+					"name": "realiza login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var authorization = jsonData['authorization'];\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//autorizacao deve existir e nao ser nulo\r",
+									"pm.test(\"Autorização existe\", function () {\r",
+									"    pm.expect(jsonData['authorization']).exist\r",
+									"        .and.not.null;\r",
+									"\r",
+									"    //atualiza a variável global authorization\r",
+									"    authorization = authorization.replace(\"Bearer \",\"\");\r",
+									"    pm.globals.set(\"AuthorizationValue\", authorization);\r",
+									"});\r",
+									"\r",
+									"//mensagem deve ser igual ao texto\r",
+									"pm.test(\"Valida Mensagem\", function () {\r",
+									"    pm.expect(jsonData['message']).to.eq('Login realizado com sucesso');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"caiotester@qa.com.br\",\r\n  \"password\": \"teste123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "realiza login inválido",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"//mensagem deve ser igual ao texto\r",
+									"pm.test(\"Valida Mensagem de Erro\", function () {\r",
+									"    pm.expect(jsonData['message']).to.eq('Email e/ou senha inválidos');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"teste@gmail.com\",\r\n  \"password\": \"xxxxxx\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "usuários",
+			"item": [
+				{
+					"name": "lista usuários",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//propriedades da resposta\r",
+									"pm.test(\"Valida propriedades da resposta\", function () {\r",
+									"    pm.expect(jsonData['quantidade']).to.exist\r",
+									"        .and.to.be.a('number');\r",
+									"    pm.expect(jsonData['usuarios']).to.exist\r",
+									"        .and.to.be.a('array');\r",
+									"});\r",
+									"\r",
+									"//verificando propriedades do array usuarios\r",
+									"pm.test(\"Valida propriedades do Array de Usuarios\", function () {\r",
+									"\r",
+									"    usuario = jsonData['usuarios'][0]\r",
+									"\r",
+									"    pm.expect(usuario['nome']).to.exist\r",
+									"        .and.to.be.a('string');\r",
+									"     pm.expect(usuario['email']).to.exist\r",
+									"        .and.to.be.a('string');\r",
+									"    pm.expect(usuario['password']).to.exist\r",
+									"        .and.to.be.a('string');\r",
+									"    pm.expect(usuario['administrador']).to.exist\r",
+									"        .and.to.be.a('string')\r",
+									"        .and.to.contain.oneOf(['true', 'false']);\r",
+									"    pm.expect(usuario['_id']).to.exist\r",
+									"        .and.to.be.a('string');\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{host}}/usuarios",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cadastra usuário",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var userId = jsonData['_id']\r",
+									"\r",
+									"//atualiza valor userId na variável dentro da collection\r",
+									"pm.collectionVariables.set(\"userID\", userId);\r",
+									"\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"//propriedades\r",
+									"pm.test(\"Valida propriedades da resposta\", function () {\r",
+									"    pm.expect(jsonData['message']).to.exist\r",
+									"        .and.to.have.string;\r",
+									"    pm.expect(jsonData['_id']).to.exist\r",
+									"        .and.to.have.string;\r",
+									"});\r",
+									"\r",
+									"//mensagem deve ser igual ao texto\r",
+									"pm.test(\"Valida da Mensagem de Sucesso\", function () {\r",
+									"    pm.expect(jsonData['message']).to.eq('Cadastro realizado com sucesso');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"Novo Teste\",\r\n  \"email\": \"novoteste@qa.com.br\",\r\n  \"password\": \"teste123\",\r\n  \"administrador\": \"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/usuarios",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar usuário por id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//verificando dados usuario cadastrado\r",
+									"pm.test(\"Valida propriedades da resposta\", function () {\r",
+									"    pm.expect(jsonData['nome']).to.be.eq('Novo Teste')\r",
+									"    pm.expect(jsonData['email']).to.be.eq('novoteste@qa.com.br')\r",
+									"    pm.expect(jsonData['password']).to.be.eq('teste123')\r",
+									"    pm.expect(jsonData['administrador']).to.be.eq('true')\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{host}}/usuarios/{{userID}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"usuarios",
+								"{{userID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editar usuário",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//mensagem deve ser igual ao texto\r",
+									"pm.test(\"Valida da Mensagem de Sucesso\", function () {\r",
+									"    pm.expect(jsonData['message']).to.eq('Registro alterado com sucesso');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"Novo teste QA 25\",\r\n  \"email\": \"novoteste@qa.com.br\",\r\n  \"password\": \"teste123\",\r\n  \"administrador\": \"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/usuarios/{{userID}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"usuarios",
+								"{{userID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "excluir usuário",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//mensagem deve ser igual ao texto\r",
+									"pm.test(\"Valida da Mensagem de Sucesso\", function () {\r",
+									"    pm.expect(jsonData['message']).to.eq('Registro excluído com sucesso');\r",
+									"\r",
+									"    pm.collectionVariables.unset('userID')\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{host}}/usuarios/{{userID}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"usuarios",
+								"{{userID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "produtos",
+			"item": [
+				{
+					"name": "lista produtos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//propriedades da resposta\r",
+									"pm.test(\"Valida propriedades da resposta\", function () {\r",
+									"    pm.expect(jsonData['quantidade']).to.exist\r",
+									"        .and.to.be.a('number');\r",
+									"    pm.expect(jsonData['produtos']).to.exist\r",
+									"        .and.to.be.a('array');\r",
+									"});\r",
+									"\r",
+									"//verificando propriedades do array produtos\r",
+									"pm.test(\"Valida propriedades do Array Produtos\", function () {\r",
+									"    produto = jsonData['produtos'][0]\r",
+									"\r",
+									"    pm.expect(produto['nome']).to.exist\r",
+									"        .and.to.be.a('string');\r",
+									"     pm.expect(produto['preco']).to.exist\r",
+									"        .and.to.be.a('number');\r",
+									"    pm.expect(produto['descricao']).to.exist\r",
+									"        .and.to.be.a('string');\r",
+									"    pm.expect(produto['quantidade']).to.exist\r",
+									"        .and.to.be.a('number');\r",
+									"    pm.expect(produto['_id']).to.exist\r",
+									"        .and.to.be.a('string');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/produtos",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"produtos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cadastra produtos",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var produtoId = jsonData['_id']\r",
+									"\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"//propriedades\r",
+									"pm.test(\"Valida propriedades da resposta\", function () {\r",
+									"    pm.expect(jsonData['message']).to.exist\r",
+									"        .and.to.have.string;\r",
+									"    pm.expect(jsonData['_id']).to.exist\r",
+									"        .and.to.have.string;\r",
+									"\r",
+									"    //atualiza valor userId na variável dentro da collection\r",
+									"    pm.collectionVariables.set(\"productID\", produtoId);\r",
+									"});\r",
+									"\r",
+									"//mensagem deve ser igual ao texto\r",
+									"pm.test(\"Valida da Mensagem de Sucesso\", function () {\r",
+									"    pm.expect(jsonData['message']).to.eq('Cadastro realizado com sucesso');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"caneta 230\",\r\n  \"preco\": 10,\r\n  \"descricao\": \"super caneta\",\r\n  \"quantidade\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/produtos",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"produtos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar produto por id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//verificando dados usuario cadastrado\r",
+									"pm.test(\"Valida propriedades da resposta\", function () {\r",
+									"    pm.expect(jsonData['nome']).to.be.eq('caneta 230')\r",
+									"    pm.expect(jsonData['preco']).to.be.eq(10)\r",
+									"    pm.expect(jsonData['descricao']).to.be.eq('super caneta')\r",
+									"    pm.expect(jsonData['quantidade']).to.be.eq(5)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{host}}/produtos/{{productID}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"produtos",
+								"{{productID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "editar produto",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//mensagem deve ser igual ao texto\r",
+									"pm.test(\"Valida da Mensagem de Sucesso\", function () {\r",
+									"    pm.expect(jsonData['message']).to.eq('Registro alterado com sucesso');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nome\": \"caneta 230 segunda versão\",\r\n  \"preco\": 15,\r\n  \"descricao\": \"super caneta\",\r\n  \"quantidade\": 50\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/produtos/{{productID}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"produtos",
+								"{{productID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "excluir produto",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//mensagem deve ser igual ao texto\r",
+									"pm.test(\"Valida da Mensagem de Sucesso\", function () {\r",
+									"    pm.expect(jsonData['message']).to.eq('Registro excluído com sucesso')\r",
+									"\r",
+									"    pm.collectionVariables.unset('productID')\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{host}}/produtos/{{productID}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"produtos",
+								"{{productID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "carrinhos",
+			"item": [
+				{
+					"name": "lista carrinhos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//propriedades da resposta\r",
+									"pm.test(\"Valida propriedades da resposta\", function () {\r",
+									"    pm.expect(jsonData['quantidade']).to.exist\r",
+									"        .and.to.be.a('number');\r",
+									"    pm.expect(jsonData['carrinhos']).to.exist\r",
+									"        .and.to.be.a('array');\r",
+									"});\r",
+									"\r",
+									"//verificando propriedades do carrinho\r",
+									"pm.test(\"Valida propriedades Produtos no Carrinho\", function () {\r",
+									"    carrinho = jsonData['carrinhos'][0]\r",
+									"\r",
+									"    pm.expect(carrinho['precoTotal']).to.be.a('number')\r",
+									"        .and.not.null\r",
+									"    pm.expect(carrinho['quantidadeTotal']).to.be.a('number')\r",
+									"        .and.eq(1)\r",
+									"    pm.expect(carrinho['idUsuario']).to.be.not.null\r",
+									"});\r",
+									"\r",
+									"//verificando propriedades do array produtos dentro do carrinho\r",
+									"pm.test(\"Valida propriedades Produtos no Carrinho\", function () {\r",
+									"    carrinho = jsonData['carrinhos'][0]\r",
+									"    carrinho_produtos = carrinho['produtos'][0]\r",
+									"\r",
+									"    pm.expect(carrinho_produtos['idProduto']).to.exist\r",
+									"        .and.not.null\r",
+									"    pm.expect(carrinho_produtos['quantidade']).to.have.at.least(1)\r",
+									"    pm.expect(carrinho_produtos['precoUnitario']).to.exist\r",
+									"        .and.not.null\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/carrinhos",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"carrinhos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cadastra carrinhos",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var carrinhoId = jsonData['_id']\r",
+									"\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"//propriedades\r",
+									"pm.test(\"Valida propriedades da resposta\", function () {\r",
+									"    pm.expect(jsonData['message']).to.exist\r",
+									"        .and.to.have.string;\r",
+									"    pm.expect(jsonData['_id']).to.exist\r",
+									"        .and.to.have.string;\r",
+									"\r",
+									"    //atualiza valor userId na variável dentro da collection\r",
+									"    pm.collectionVariables.set(\"carrinhoID\", carrinhoId);\r",
+									"});\r",
+									"\r",
+									"//mensagem deve ser igual ao texto\r",
+									"pm.test(\"Valida da Mensagem de Sucesso\", function () {\r",
+									"    pm.expect(jsonData['message']).to.eq('Cadastro realizado com sucesso');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"produtos\": [\r\n    {\r\n      \"idProduto\": \"BeeJh5lz3k6kSIzA\",\r\n      \"quantidade\": 1\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/carrinhos",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"carrinhos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar produto por id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//verificando propriedades do carrinho\r",
+									"pm.test(\"Valida propriedades do Carrinho\", function () {\r",
+									"    pm.expect(jsonData['precoTotal']).to.be.a('number')\r",
+									"        .and.not.null\r",
+									"    pm.expect(jsonData['quantidadeTotal']).to.be.a('number')\r",
+									"        .and.eq(1)\r",
+									"    pm.expect(jsonData['idUsuario']).to.be.not.null\r",
+									"});\r",
+									"\r",
+									"//verificando propriedades do array produtos dentro do carrinho\r",
+									"pm.test(\"Valida propriedades Produtos no Carrinho\", function () {\r",
+									"    carrinho_produtos = jsonData['produtos'][0]\r",
+									"\r",
+									"    pm.expect(carrinho_produtos['idProduto']).to.exist\r",
+									"        .and.not.null\r",
+									"    pm.expect(carrinho_produtos['quantidade']).to.have.at.least(1)\r",
+									"    pm.expect(carrinho_produtos['precoUnitario']).to.exist\r",
+									"        .and.not.null\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{host}}/carrinhos/{{carrinhoID}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"carrinhos",
+								"{{carrinhoID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cancelar compra",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//mensagem deve ser igual ao texto\r",
+									"pm.test(\"Valida da Mensagem de Sucesso\", function () {\r",
+									"    pm.expect(jsonData['message']).to.eq('Registro excluído com sucesso. Estoque dos produtos reabastecido')\r",
+									"\r",
+									"    pm.collectionVariables.unset('carrinhoID')\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/carrinhos/cancelar-compra",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"carrinhos",
+								"cancelar-compra"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "concluir compra",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//mensagem deve ser igual ao texto\r",
+									"pm.test(\"Valida da Mensagem de Sucesso\", function () {\r",
+									"    pm.expect(jsonData['message']).to.eq('Registro excluído com sucesso.')\r",
+									"\r",
+									"    pm.collectionVariables.unset('carrinhoID')\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/carrinhos/concluir-compra",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"carrinhos",
+								"concluir-compra"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{AuthorizationValue}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "serverest.dev"
+		},
+		{
+			"key": "host_alt",
+			"value": "serverest.dev"
+		},
+		{
+			"key": "productID",
+			"value": ""
+		},
+		{
+			"key": "carrinhoID",
+			"value": ""
+		}
+	]
+}
