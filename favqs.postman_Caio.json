@@ -1,0 +1,299 @@
+{
+	"info": {
+		"_postman_id": "31aa92a3-9b58-456e-bd29-91851a713296",
+		"name": "FAVQS - API (First Template)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Session",
+			"item": [
+				{
+					"name": "criar sessão",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var token = jsonData['User-Token'];\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Validação do token\", function () {\r",
+									"    pm.expect(jsonData).to.have.property('User-Token');\r",
+									"    \r",
+									"    //set token na variável dentro da collection\r",
+									"    pm.collectionVariables.set(\"User-Token\", token);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Valida informações do usuário\", function () {\r",
+									"    pm.expect(jsonData['login']).to.eql('caio');\r",
+									"    pm.expect(jsonData['email']).to.eql('caioandrian@gmail.com');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n  \"user\": {\r\n    \"login\": \"caioandrian@gmail.com\",\r\n    \"password\": \"teste123\"\r\n  }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/session",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"session"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Quotes",
+			"item": [
+				{
+					"name": "Citação do dia (no session and no auth required)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://favqs.com/api/qotd",
+							"protocol": "https",
+							"host": [
+								"favqs",
+								"com"
+							],
+							"path": [
+								"api",
+								"qotd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Citações (only auth req.)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://favqs.com/api/quotes",
+							"protocol": "https",
+							"host": [
+								"favqs",
+								"com"
+							],
+							"path": [
+								"api",
+								"quotes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Citação Down Vote (user req.)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var token = jsonData['User-Token'];\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Valida voto positivo\", function () {\r",
+									"    pm.expect(jsonData['user_details']['upvote']).to.eq(true)\r",
+									"    pm.expect(jsonData['user_details']['downvote']).to.eq(false)\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "User-Token",
+								"value": "{{User-Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/quotes/50725/upvote",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quotes",
+								"50725",
+								"upvote"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Citação Up Vote (user req.) Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var token = jsonData['User-Token'];\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Valida voto positivo\", function () {\r",
+									"    pm.expect(jsonData['user_details']['upvote']).to.eq(false)\r",
+									"    pm.expect(jsonData['user_details']['downvote']).to.eq(true)\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "User-Token",
+								"value": "{{User-Token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/quotes/50725/downvote",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quotes",
+								"50725",
+								"downvote"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Session End",
+			"item": [
+				{
+					"name": "Encerrar sessão",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.unset(\"User-Token\");\r",
+									"\r",
+									"pm.test(\"Valida mensagem\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.message).to.eql('User logged out.');\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "User-Token",
+								"value": "{{User-Token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/session",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"session"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{AuthorizationValue}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "{{KeyAuth}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
