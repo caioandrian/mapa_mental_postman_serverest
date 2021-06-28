@@ -36,6 +36,17 @@ www.favqs.com/api
     * cenário Cadastro
 
 * Produto
+
 * Carrinho
+   * contexto (Com 1 ou mais Produtos)
+        * cenário finalizar compra
+        * calcular frete
+        * aplicar cupom
+        * listagem de produtos
+         * alterar quantidade
+         * remover produto
+   * contexto (Carrinho Vazio)
+        * cenário escolher mais produtos
+        
 * Pedido
 * Formas de Pagamento
