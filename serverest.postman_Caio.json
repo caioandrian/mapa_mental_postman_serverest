@@ -146,7 +146,7 @@
 									"\r",
 									"    pm.expect(usuario['nome']).to.exist\r",
 									"        .and.to.be.a('string');\r",
-									"     pm.expect(usuario['email']).to.exist\r",
+									"    pm.expect(usuario['email']).to.exist\r",
 									"        .and.to.be.a('string');\r",
 									"    pm.expect(usuario['password']).to.exist\r",
 									"        .and.to.be.a('string');\r",
@@ -259,10 +259,17 @@
 									"\r",
 									"//verificando dados usuario cadastrado\r",
 									"pm.test(\"Valida propriedades da resposta\", function () {\r",
-									"    pm.expect(jsonData['nome']).to.be.eq('Novo Teste')\r",
-									"    pm.expect(jsonData['email']).to.be.eq('novoteste@qa.com.br')\r",
-									"    pm.expect(jsonData['password']).to.be.eq('teste123')\r",
-									"    pm.expect(jsonData['administrador']).to.be.eq('true')\r",
+									"    pm.expect(jsonData['nome']).to.exist\r",
+									"        .and.to.be.a('string');\r",
+									"    pm.expect(jsonData['email']).to.exist\r",
+									"        .and.to.be.a('string');\r",
+									"    pm.expect(jsonData['password']).to.exist\r",
+									"        .and.to.be.a('string');\r",
+									"    pm.expect(jsonData['administrador']).to.exist\r",
+									"        .and.to.be.a('string')\r",
+									"        .and.to.contain.oneOf(['true', 'false']);\r",
+									"    pm.expect(jsonData['_id']).to.exist\r",
+									"        .and.to.be.a('string');\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -527,10 +534,16 @@
 									"\r",
 									"//verificando dados usuario cadastrado\r",
 									"pm.test(\"Valida propriedades da resposta\", function () {\r",
-									"    pm.expect(jsonData['nome']).to.be.eq('caneta 230')\r",
-									"    pm.expect(jsonData['preco']).to.be.eq(10)\r",
-									"    pm.expect(jsonData['descricao']).to.be.eq('super caneta')\r",
-									"    pm.expect(jsonData['quantidade']).to.be.eq(5)\r",
+									"    pm.expect(jsonData['nome']).to.exist\r",
+									"        .and.to.be.a('string');\r",
+									"     pm.expect(jsonData['preco']).to.exist\r",
+									"        .and.to.be.a('number');\r",
+									"    pm.expect(jsonData['descricao']).to.exist\r",
+									"        .and.to.be.a('string');\r",
+									"    pm.expect(jsonData['quantidade']).to.exist\r",
+									"        .and.to.be.a('number');\r",
+									"    pm.expect(jsonData['_id']).to.exist\r",
+									"        .and.to.be.a('string');\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -975,6 +988,10 @@
 		},
 		{
 			"key": "carrinhoID",
+			"value": ""
+		},
+		{
+			"key": "userID",
 			"value": ""
 		}
 	]
