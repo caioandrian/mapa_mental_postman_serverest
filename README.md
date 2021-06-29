@@ -27,8 +27,9 @@ www.favqs.com/api
 
 * Newsletter 
     * contexto (Primeiro Acesso)
-        * cenário: popup para cadastro
-    * cenário Cadastro
+        * cenário: Popup com Email cadastro
+    * contexto (Próximos Acessos)
+      *  cenário: Email e Senha
 
 * Produto
 
@@ -40,7 +41,7 @@ www.favqs.com/api
         * esquema de cenário: listagem de produtos
          * alterar quantidade
          * remover produto
-   * contexto (Carrinho Vazio)
+   * contexto (Vazio)
         * cenário: escolher mais produtos
         
 * Pedido
