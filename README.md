@@ -12,14 +12,9 @@ www.favqs.com/api
 
 **Exemplo de Funcionalidades no Ecommerce:**
 * Autenticação 
-    * esquema de cenário: Login
-        * cenário 1: entrar com chave de acesso
-        * cenário 2: entrar usando rede social
-        * cenário 3: entrar usando e-email e senha
-    * esquema de cenário: Cadastro
-        * cenário 1: cadastrar com chave de acesso
-        * cenário 2: cadastrar usando rede social
-        * cenário 3: cadastrar usando e-email e 
+    * cenário: Login/Cadastro com Chave de Acesso 
+    * cenário: Login/Cadastro com E-mail e Senha
+    * cenário: Login/Cadastro com Rede Social (não recomendado testar login em site de parceiros/terceiros)
 
 * Perfil
     * cenário 1: Editar Dados
@@ -27,26 +22,32 @@ www.favqs.com/api
     * esquema: de cenário Pedidos
         * acompanhar
         * refazer
-
+ 
 * Blog
 
 * Newsletter 
     * contexto (Primeiro Acesso)
-        * cenário popup para cadastro
+        * cenário: popup para cadastro
     * cenário Cadastro
 
 * Produto
 
 * Carrinho
    * contexto (Com 1 ou mais Produtos)
-        * cenário finalizar compra
-        * calcular frete
-        * aplicar cupom
-        * listagem de produtos
+        * cenário: finalizar compra
+        * cenário: calcular frete
+        * cenário: aplicar cupom
+        * esquema de cenário: listagem de produtos
          * alterar quantidade
          * remover produto
    * contexto (Carrinho Vazio)
-        * cenário escolher mais produtos
+        * cenário: escolher mais produtos
         
 * Pedido
+   * contexto (Com 1 ou mais Produtos)
+      * cenário: Informar Dados Pessoais
+      * cenário: Selecionar Forma de Entrega
+      * cenário: Confirmar Endereço de Entrega
+      * cenário: Selecionar Forma de Pagamento
+      
 * Formas de Pagamento
