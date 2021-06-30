@@ -25,10 +25,11 @@ www.favqs.com/api
  
 * Blog
 
-* Newsletter 
+* Cupom para Primeira Compra 
     * contexto (Primeiro Acesso)
-        * cenário: Popup com Email cadastro
-    * contexto (Próximos Acessos)
+        * cenário: Email
+
+* Newsletter 
       *  cenário: Email e Senha
 
 * Produto
@@ -44,11 +45,12 @@ www.favqs.com/api
    * contexto (Vazio)
         * cenário: escolher mais produtos
         
-* Pedido
+* Checkout
    * contexto (Com 1 ou mais Produtos)
-      * cenário: Informar Dados Pessoais
+      * cenário: Dados Pessoais
+      * cenário: CEP
+      * cenário: Endereço de Entrega
       * cenário: Selecionar Forma de Entrega
-      * cenário: Confirmar Endereço de Entrega
       * cenário: Selecionar Forma de Pagamento
       
 * Formas de Pagamento
